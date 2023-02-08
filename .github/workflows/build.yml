@@ -17,6 +17,14 @@ jobs:
       
       - run: npm ci
 
+      - run: tar -cf node_modules.tar node_modules
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: node_modules
+          path: node_modules.tar
+          retention-days: 1
+
   build_dev:
     needs: deps
     runs-on: ubuntu-latest
@@ -30,7 +38,14 @@ jobs:
           cache: npm
           node-version-file: '.nvmrc'
 
-      - run: npm ci
+      # - run: npm ci
+      - uses: actions/download-artifact@v3
+        with:
+          name: node_modules
+      
+      - run: tar -xf node_modules.tar
+
+      - run: ls -al
 
   build_prod:
     needs: deps
@@ -45,4 +60,11 @@ jobs:
           cache: npm
           node-version-file: '.nvmrc'
       
-      - run: npm ci
+      # - run: npm ci
+      - uses: actions/download-artifact@v3
+        with:
+          name: node_modules
+      
+      - run: tar -xf node_modules.tar
+
+      - run: ls -al
